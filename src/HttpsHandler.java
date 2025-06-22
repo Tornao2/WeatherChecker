@@ -1,25 +1,25 @@
-import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
+import org.json.JSONObject;
+
 import java.net.URI;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class HttpsHandler {
-    private HttpsURLConnection connection;
-    private String baseSiteUrl = "https://api.open-meteo.com/v1/";
+    private HttpClient client;
+    private String baseSiteUrl = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m";
 
-    public boolean sendRequestConnection(String additionalUrl) {
-        String properUrl = baseSiteUrl.concat(additionalUrl);
+    public HttpsHandler(){
+        client = HttpClient.newHttpClient();
+    }
+
+    public JSONObject sendRequestConnection(String additionalUrl) {
         try {
-            URI uri = new URI(properUrl);
-            URL siteUrl = uri.toURL();
-            connection = (HttpsURLConnection) siteUrl.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setDoOutput(true);
-            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-
+            HttpRequest request = HttpRequest.newBuilder(new URI(baseSiteUrl + additionalUrl)).GET().build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return new JSONObject(response.body());
         } catch (Exception e) {
-            return false;
+            return new JSONObject();
         }
-        return true;
     }
 }
