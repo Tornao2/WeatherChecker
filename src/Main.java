@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 
 public class Main extends Application {
-    private HttpsHandler httphandler = new HttpsHandler();
+    private final HttpsHandler httphandler = new HttpsHandler();
 
     public void start(Stage stage)  {
         VBox verticalManager = new VBox(4);
