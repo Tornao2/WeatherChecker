@@ -11,7 +11,6 @@ public class HttpsHandler {
     public HttpsHandler(){
         client = HttpClient.newHttpClient();
     }
-
     public JSONObject sendRequestConnection(String additionalUrl) {
         try {
             String baseSiteUrl = "https://api.open-meteo.com/v1/forecast?";
