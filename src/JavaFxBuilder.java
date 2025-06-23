@@ -2,9 +2,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
 public class JavaFxBuilder {
@@ -14,13 +16,31 @@ public class JavaFxBuilder {
         layoutManager.getChildren().add(sendButton);
     }
     static public void createLabeledTextField(Pane layoutManager, String baseName){
-        HBox box = new HBox(6);
-        box.setAlignment(Pos.CENTER_LEFT);
+        GridPane box = new GridPane();
         box.setId(baseName + "Container");
         TextField field = new TextField();
         field.setId(baseName + "Field");
         Label label = new Label(baseName + ": ");
+        GridPane.setConstraints(label, 1, 0);
+        GridPane.setConstraints(field, 2, 0);
+        field.setMinWidth(100);
+        box.getColumnConstraints().add(new ColumnConstraints(0));
+        box.getColumnConstraints().add(new ColumnConstraints(70));
         box.getChildren().addAll(label, field);
+        layoutManager.getChildren().add(box);
+    }
+    static public void createLabeledDataPicker(Pane layoutManager, String baseName) {
+        GridPane box = new GridPane();
+        box.setId(baseName + "Container");
+        DatePicker picker = new DatePicker();
+        picker.setId(baseName+"Date");
+        Label label = new Label(baseName + ": ");
+        layoutManager.getChildren().addAll();
+        GridPane.setConstraints(label, 1, 0);
+        GridPane.setConstraints(picker, 2, 0);
+        box.getColumnConstraints().add(new ColumnConstraints(0));
+        box.getColumnConstraints().add(new ColumnConstraints(70));
+        box.getChildren().addAll(label, picker);
         layoutManager.getChildren().add(box);
     }
 }
