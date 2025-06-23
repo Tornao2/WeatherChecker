@@ -2,11 +2,14 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import org.json.JSONObject;
+
+import java.time.LocalDate;
 
 public class Main extends Application {
     private HttpsHandler httphandler = new HttpsHandler();
@@ -25,7 +28,7 @@ public class Main extends Application {
                 else
                     System.out.println(json);
             } catch (Exception e) {
-                System.err.println("Couldn't parse coordinates");
+                System.err.println("Couldn't create a link" + e);
             }
         });
         basicSetUp(stage, verticalManager);
@@ -33,8 +36,10 @@ public class Main extends Application {
 
     private String composeUrl(Pane layoutManager){
         Pair<Float, Float> coordinates = parseCoordinates(layoutManager);
-        String returnLink = "latitude=" + coordinates.getKey() + "&longitude=" + coordinates.getValue() + "&hourly=temperature_2m";
-        return returnLink;
+        Pair<String, String> dates = parseDates(layoutManager);
+        String coordinatesLink = "latitude=" + coordinates.getKey() + "&longitude=" + coordinates.getValue() + "&hourly=temperature_2m";
+        String dateLink = coordinatesLink + "&start_date=" + dates.getKey() + "&end_date=" + dates.getValue();
+        return dateLink;
     }
     private Pair<Float, Float> parseCoordinates(Pane layoutManager) {
         String latitudeText = ((TextField) (layoutManager.lookup("#FirstRow").lookup("#LatitudeContainer").lookup("#LatitudeField"))).getText();
@@ -43,9 +48,34 @@ public class Main extends Application {
         float longitudeFloat;
         latitudeFloat = Math.round(Float.parseFloat(latitudeText) * 100000) / 100000.0f;
         longitudeFloat = Math.round(Float.parseFloat(longitudeText) * 100000) / 100000.0f;
-        if (longitudeFloat > 180 || longitudeFloat < -180 || latitudeFloat < -90 || latitudeFloat > 90)
+        if (longitudeFloat > 180 || longitudeFloat < -180) {
+            System.err.println("Wrong longitude format");
             throw new RuntimeException();
+        }
+        if (latitudeFloat < -90 || latitudeFloat > 90){
+            System.err.println("Wrong latitude format");
+            throw new RuntimeException();
+        }
         return new Pair<>(latitudeFloat, longitudeFloat);
+    }
+    private Pair<String, String> parseDates (Pane layoutManager){
+        LocalDate startDate = ((DatePicker) (layoutManager.lookup("#SecondRow").lookup("#StartDateContainer")
+                .lookup("#StartDateDate"))).getValue();
+        LocalDate endDate = ((DatePicker) (layoutManager.lookup("#SecondRow").lookup("#StopDateContainer")
+                .lookup("#StopDateDate"))).getValue();
+        if (startDate.isAfter(endDate) || startDate.isEqual(endDate)){
+            System.err.println("End date must be further chronologically");
+            throw new RuntimeException();
+        }
+        if (startDate.minusDays(16).isAfter(LocalDate.now()) || endDate.minusDays(16).isAfter(LocalDate.now())){
+            System.err.println("Date must be less than 17 days ahead of the current date");
+            throw new RuntimeException();
+        }
+        if (startDate.plusMonths(3).isBefore(LocalDate.now()) || endDate.plusMonths(3).isBefore(LocalDate.now())){
+            System.err.println("Date must be less than 3 months before the current date");
+            throw new RuntimeException();
+        }
+        return new Pair<>(startDate.toString(), endDate.toString());
     }
     private void createFirstRow(Pane layoutManager){
         GridPane firstRow = new GridPane();

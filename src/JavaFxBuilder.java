@@ -1,6 +1,5 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -17,9 +16,9 @@ public class JavaFxBuilder {
     }
     static public void createLabeledTextField(Pane layoutManager, String baseName){
         GridPane box = new GridPane();
-        box.setId(baseName + "Container");
+        box.setId(baseName.replace(" ", "") + "Container");
         TextField field = new TextField();
-        field.setId(baseName + "Field");
+        field.setId(baseName.replace(" ", "") + "Field");
         Label label = new Label(baseName + ": ");
         GridPane.setConstraints(label, 1, 0);
         GridPane.setConstraints(field, 2, 0);
@@ -31,9 +30,9 @@ public class JavaFxBuilder {
     }
     static public void createLabeledDataPicker(Pane layoutManager, String baseName) {
         GridPane box = new GridPane();
-        box.setId(baseName + "Container");
+        box.setId(baseName.replace(" ", "") + "Container");
         DatePicker picker = new DatePicker();
-        picker.setId(baseName+"Date");
+        picker.setId(baseName.replace(" ", "")+"Date");
         Label label = new Label(baseName + ": ");
         layoutManager.getChildren().addAll();
         GridPane.setConstraints(label, 1, 0);
