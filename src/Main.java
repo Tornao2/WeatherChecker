@@ -10,10 +10,12 @@ import javafx.util.Pair;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
-
+/// Main class for the program
 public class Main extends Application {
+    ///Object of the custom https handling class
     private final HttpsHandler httphandler = new HttpsHandler();
-
+    ///Starting function which setups all the ui and event handling
+    ///Equivalent to main functions
     public void start(Stage stage)  {
         VBox verticalManager = new VBox(4);
         verticalManager.setPadding(new Insets(6));
@@ -33,14 +35,15 @@ public class Main extends Application {
         });
         basicSetUp(stage, verticalManager);
     }
-
+    ///Function to compose the url used to send the request based on the parameters program user chooses
     private String composeUrl(Pane layoutManager){
         Pair<Float, Float> coordinates = parseCoordinates(layoutManager);
         Pair<String, String> dates = parseDates(layoutManager);
-        String coordinatesLink = "latitude=" + coordinates.getKey() + "&longitude=" + coordinates.getValue() + "&hourly=temperature_2m";
+        String coordinatesLink = "https://api.open-meteo.com/v1/forecast?latitude=" + coordinates.getKey() + "&longitude=" + coordinates.getValue() + "&hourly=temperature_2m";
         String dateLink = coordinatesLink + "&start_date=" + dates.getKey() + "&end_date=" + dates.getValue();
         return dateLink;
     }
+    ///Function to parse the coordinates from the textfields and employ some checks to their correctness
     private Pair<Float, Float> parseCoordinates(Pane layoutManager) {
         String latitudeText = ((TextField) (layoutManager.lookup("#FirstRow").lookup("#LatitudeContainer").lookup("#LatitudeField"))).getText();
         String longitudeText = ((TextField) (layoutManager.lookup("#FirstRow").lookup("#LongitudeContainer").lookup("#LongitudeField"))).getText();
@@ -58,6 +61,7 @@ public class Main extends Application {
         }
         return new Pair<>(latitudeFloat, longitudeFloat);
     }
+    ///Function to parse the start-end dates for the use in url composition which also employs checks to their correctness
     private Pair<String, String> parseDates (Pane layoutManager){
         LocalDate startDate = ((DatePicker) (layoutManager.lookup("#SecondRow").lookup("#StartDateContainer")
                 .lookup("#StartDateDate"))).getValue();
@@ -77,6 +81,7 @@ public class Main extends Application {
         }
         return new Pair<>(startDate.toString(), endDate.toString());
     }
+    ///Function to create textfields in the first virtual row of program UI which pertain to latitude and longitude
     private void createFirstRow(Pane layoutManager){
         GridPane firstRow = new GridPane();
         firstRow.setId("FirstRow");
@@ -88,6 +93,7 @@ public class Main extends Application {
         firstRow.getColumnConstraints().add(new ColumnConstraints(320));
         layoutManager.getChildren().add(firstRow);
     }
+    ///Function to create data pickers in the second  virtual row of program UI which pertain to start and end dates
     private void createSecondRow(Pane layoutManager){
         GridPane secondRow = new GridPane();
         secondRow.setId("SecondRow");
@@ -99,6 +105,7 @@ public class Main extends Application {
         secondRow.getColumnConstraints().add(new ColumnConstraints(320));
         layoutManager.getChildren().add(secondRow);
     }
+    ///Function which sets up the scene object
     private void basicSetUp(Stage stage, Pane layoutManager) {
         Scene scene = new Scene(layoutManager, 640, 480);
         stage.setScene(scene);
