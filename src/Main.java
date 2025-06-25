@@ -45,9 +45,9 @@ public class Main extends Application {
     private String composeUrl(Pane layoutManager){
         Pair<Float, Float> coordinates = parseCoordinates(layoutManager);
         Pair<String, String> dates = parseDates(layoutManager);
-        String coordinatesLink = "https://api.open-meteo.com/v1/forecast?latitude=" + coordinates.getKey() + "&longitude=" + coordinates.getValue() + "&hourly=temperature_2m";
-        String dateLink = coordinatesLink + "&start_date=" + dates.getKey() + "&end_date=" + dates.getValue();
-        return dateLink;
+        String coordinatesLink = "https://api.open-meteo.com/v1/forecast?latitude=" + coordinates.getKey() + "&longitude=" + coordinates.getValue() + "&";
+        String allParameters = coordinatesLink + "hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m,precipitation";
+        return allParameters + "&start_date=" + dates.getKey() + "&end_date=" + dates.getValue();
     }
     ///Function to parse the coordinates from the textfields and employ some checks to their correctness
     private Pair<Float, Float> parseCoordinates(Pane layoutManager) {
