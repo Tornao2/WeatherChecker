@@ -1,13 +1,16 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
- /**
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
+/**
  * Class implementing the builder archetype for objects connected to javafx
  */
 public class JavaFxBuilder {
@@ -21,11 +24,10 @@ public class JavaFxBuilder {
     }
      /**
       * Static method to create javaFx textfield with a label predefined to be in one row using a gridpane
-      * and setting id for both the container and the field for later searches by using the basename provided by user
+      * and setting id for the field for later searches by using the basename provided by user
       */
     static public void createLabeledTextField(Pane layoutManager, String baseName){
         GridPane box = new GridPane();
-        box.setId(baseName.replace(" ", "") + "Container");
         TextField field = new TextField();
         field.setId(baseName.replace(" ", "") + "Field");
         Label label = new Label(baseName + ": ");
@@ -39,11 +41,10 @@ public class JavaFxBuilder {
     }
      /**
       * Static function to create a labeled data picker object with a predefined label, both positioned in one row;
-      * ids set to the container and data picker itself are created by concating phrases with the base name
+      * id set to the data picker itself is created by concating Date with the base name
       */
     static public void createLabeledDataPicker(Pane layoutManager, String baseName) {
         GridPane box = new GridPane();
-        box.setId(baseName.replace(" ", "") + "Container");
         DatePicker picker = new DatePicker();
         picker.setId(baseName.replace(" ", "")+"Date");
         Label label = new Label(baseName + ": ");
@@ -54,5 +55,34 @@ public class JavaFxBuilder {
         box.getColumnConstraints().add(new ColumnConstraints(70));
         box.getChildren().addAll(label, picker);
         layoutManager.getChildren().add(box);
+    }
+    /// Static function to create a horizontal seperator with predefined id that spans the entire screen
+    static public void createHorSeperator(Pane layoutManager) {
+        Separator separator = new Separator();
+        separator.setId("Separator");
+        separator.setMaxWidth(layoutManager.getWidth());
+        separator.setStyle("-fx-background-color: #aa1a1a;");
+        layoutManager.getChildren().add(separator);
+    }
+    /// Static function to create a horizontal seperator with predefined id that spans the entire screen at the first position in the layout manager
+    static public void createHorSeperatorFirst(Pane layoutManager) {
+        Separator separator = new Separator();
+        separator.setId("Separator");
+        separator.setMaxWidth(640);
+        separator.setStyle("-fx-background-color: #aa1a1a;");
+        layoutManager.getChildren().addFirst(separator);
+    }
+    /// Static function to create a text entity with defined by user id
+    static public void createCenteredText(Pane layoutManager, String idName, String statement){
+        Text text = new Text(statement);
+        text.setId(idName);
+        layoutManager.getChildren().add(text);
+    }
+    /// Static function to create a text entity with defined by user id at the first position in the layout manager
+    static public void createCenteredTextFirst(Pane layoutManager, String idName, String statement){
+        Text text = new Text(statement);
+        text.setId(idName);
+        text.setFont(new Font(16));
+        layoutManager.getChildren().addFirst(text);
     }
 }
