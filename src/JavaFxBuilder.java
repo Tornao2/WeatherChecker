@@ -1,7 +1,4 @@
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
@@ -14,14 +11,6 @@ import javafx.scene.text.Text;
  * Class implementing the builder archetype for objects connected to javafx
  */
 public class JavaFxBuilder {
-    /**
-     * Static method to create javafx button with a defined by user text and event for what happens when you press it
-     */
-    static public void createButton(Pane layoutManager, String title, EventHandler<ActionEvent> event) {
-        Button sendButton = new Button(title);
-        sendButton.setOnAction(event);
-        layoutManager.getChildren().add(sendButton);
-    }
      /**
       * Static method to create javaFx textfield with a label predefined to be in one row using a gridpane
       * and setting id for the field for later searches by using the basename provided by user
@@ -56,14 +45,6 @@ public class JavaFxBuilder {
         box.getChildren().addAll(label, picker);
         layoutManager.getChildren().add(box);
     }
-    /// Static function to create a horizontal seperator with predefined id that spans the entire screen
-    static public void createHorSeperator(Pane layoutManager) {
-        Separator separator = new Separator();
-        separator.setId("Separator");
-        separator.setMaxWidth(layoutManager.getWidth());
-        separator.setStyle("-fx-background-color: #aa1a1a;");
-        layoutManager.getChildren().add(separator);
-    }
     /// Static function to create a horizontal seperator with predefined id that spans the entire screen at the first position in the layout manager
     static public void createHorSeperatorFirst(Pane layoutManager) {
         Separator separator = new Separator();
@@ -72,17 +53,11 @@ public class JavaFxBuilder {
         separator.setStyle("-fx-background-color: #aa1a1a;");
         layoutManager.getChildren().addFirst(separator);
     }
-    /// Static function to create a text entity with defined by user id
-    static public void createCenteredText(Pane layoutManager, String idName, String statement){
-        Text text = new Text(statement);
-        text.setId(idName);
-        layoutManager.getChildren().add(text);
-    }
     /// Static function to create a text entity with defined by user id at the first position in the layout manager
     static public void createCenteredTextFirst(Pane layoutManager, String idName, String statement){
         Text text = new Text(statement);
         text.setId(idName);
-        text.setFont(new Font(16));
+        text.setFont(new Font(15));
         layoutManager.getChildren().addFirst(text);
     }
 }

@@ -2,15 +2,19 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 /// Main class for the program
 public class Main extends Application {
     ///Object of the custom https handling class
@@ -23,7 +27,8 @@ public class Main extends Application {
         verticalManager.setAlignment(Pos.BASELINE_CENTER);
         createFirstRow(verticalManager);
         createSecondRow(verticalManager);
-        JavaFxBuilder.createButton(verticalManager, "Send a request", _ -> {
+        Button sendButton = new Button("Send the request");
+        sendButton.setOnAction(_ -> {
             if (verticalManager.lookup("Separator") != null){
                 verticalManager.getChildren().removeFirst();
                 verticalManager.getChildren().removeFirst();
@@ -31,22 +36,65 @@ public class Main extends Application {
             try {
                 JSONObject json = httphandler.sendRequestConnection(composeUrl(verticalManager));
                 if (json.isEmpty())
-                    System.err.println("GET didn't succeed");
+                    throw new RuntimeException("GET didn't succeed");
                 else
-                    System.out.println(json);
+                    handleJson(verticalManager, json);
             } catch (Exception e) {
                 JavaFxBuilder.createHorSeperatorFirst(verticalManager);
                 JavaFxBuilder.createCenteredTextFirst(verticalManager, "ErrorLabel", e.getMessage());
-            }
-        });
+            }});
+        verticalManager.getChildren().add(sendButton);
+        createTabs(verticalManager);
         basicSetUp(stage, verticalManager);
+    }
+    ///Function that creates a tab view and tabs that decide whether you are looking at current or hourly data
+    private void createTabs(Pane layoutManager){
+        TabPane tabPane = new TabPane();
+        tabPane.setMinHeight(30);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPane.setTabMinWidth(290);
+        Tab current = new Tab("Current weather");
+        GridPane currentWeatherTab = new GridPane();
+        currentWeatherTab.setId("CurrentWeatherTab");
+        current.setContent(currentWeatherTab);
+        Tab hourly = new Tab("Hourly weather");
+        GridPane hourlyWeatherTab = new GridPane();
+        hourlyWeatherTab.setId("HourlyWeatherTab");
+        current.setContent(hourlyWeatherTab);
+        tabPane.getTabs().addAll(current, hourly);
+        layoutManager.getChildren().add(tabPane);
+    }
+    ///Function that handles json data received from GET request
+    private void handleJson(Pane layoutManager, JSONObject receivedJson){
+        handleCurrentData(layoutManager, receivedJson.getJSONObject("current"));
+        handleHourlyData(layoutManager, receivedJson.getJSONObject("hourly"));
+    }
+    ///Function that handles json data received from GET request that is current
+    private void handleCurrentData(Pane layoutManager, JSONObject currentData) {
+        float currentTemperature = currentData.getFloat("temperature_2m");
+        float apparentTemperature = currentData.getFloat("apparent_temperature");
+        int relativeHumidity = currentData.getInt("relative_humidity_2m");
+        float preticipation = currentData.getFloat("precipitation");
+        int weatherCode = currentData.getInt("weather_code");
+        float pressure = currentData.getFloat("surface_pressure");
+        float windSpeed = currentData.getFloat("wind_speed_10m");
+    }
+    ///Function that handles json data received from GET request that is hourly
+    private void handleHourlyData(Pane layoutManager, JSONObject hourlyData) {
+        JSONArray timeArray = hourlyData.getJSONArray("time");
+        JSONArray apparentTemperature = hourlyData.getJSONArray("apparent_temperature");
+        JSONArray relativeHumidity = hourlyData.getJSONArray("relative_humidity_2m");
+        JSONArray preticipation = hourlyData.getJSONArray("precipitation");
+        JSONArray weatherCode = hourlyData.getJSONArray("weather_code");
+        JSONArray pressure = hourlyData.getJSONArray("surface_pressure");
+        JSONArray windSpeed = hourlyData.getJSONArray("wind_speed_10m");
     }
     ///Function to compose the url used to send the request based on the parameters program user chooses
     private String composeUrl(Pane layoutManager){
         Pair<Float, Float> coordinates = parseCoordinates(layoutManager);
         Pair<String, String> dates = parseDates(layoutManager);
         String coordinatesLink = "https://api.open-meteo.com/v1/forecast?latitude=" + coordinates.getKey() + "&longitude=" + coordinates.getValue() + "&";
-        String allParameters = coordinatesLink + "hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m,precipitation";
+        String allParameters = coordinatesLink + "hourly=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m,precipitation&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m&timezone=auto";
         return allParameters + "&start_date=" + dates.getKey() + "&end_date=" + dates.getValue();
     }
     ///Function to parse the coordinates from the textfields and employ some checks to their correctness
@@ -56,10 +104,8 @@ public class Main extends Application {
         if (latitudeText.isEmpty() || longitudeText.isEmpty()){
             throw new RuntimeException("Both latitude and longitude must have a valid argument");
         }
-        float latitudeFloat;
-        float longitudeFloat;
-        latitudeFloat = Math.round(Float.parseFloat(latitudeText) * 100000) / 100000.0f;
-        longitudeFloat = Math.round(Float.parseFloat(longitudeText) * 100000) / 100000.0f;
+        float latitudeFloat = Math.round(Float.parseFloat(latitudeText) * 100000) / 100000.0f;
+        float longitudeFloat = Math.round(Float.parseFloat(longitudeText) * 100000) / 100000.0f;
         if (longitudeFloat > 180 || longitudeFloat < -180) {
             throw new RuntimeException("Wrong longitude format");
         }
