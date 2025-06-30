@@ -65,12 +65,12 @@ public class Main extends Application {
     ///Function that handles json data received from GET request that is current
     private void handleCurrentData(Pane layoutManager, JSONObject currentData) {
         CurrentDataDisplay.createWeatherCodeSign(layoutManager, currentData.getInt("weather_code"));
-        float currentTemperature = currentData.getFloat("temperature_2m");
-        float apparentTemperature = currentData.getFloat("apparent_temperature");
-        int relativeHumidity = currentData.getInt("relative_humidity_2m");
-        float precipitation = currentData.getFloat("precipitation");
-        float pressure = currentData.getFloat("surface_pressure");
-        float windSpeed = currentData.getFloat("wind_speed_10m");
+        CurrentDataDisplay.addTemperatureText(layoutManager, currentData.getFloat("temperature_2m"));
+        CurrentDataDisplay.addApparentTemperatureText(layoutManager, currentData.getFloat("apparent_temperature"));
+        CurrentDataDisplay.addRelativeHumidity(layoutManager, currentData.getInt("relative_humidity_2m"));
+        CurrentDataDisplay.addPrecipitation(layoutManager, currentData.getFloat("precipitation"));
+        CurrentDataDisplay.addPressure(layoutManager, currentData.getFloat("surface_pressure"));
+        CurrentDataDisplay.addWindSpeed(layoutManager, currentData.getFloat("wind_speed_10m"));
     }
     ///Function that handles json data received from GET request that is hourly
     private void handleHourlyData(Pane layoutManager, JSONObject hourlyData) {
