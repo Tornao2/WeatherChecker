@@ -18,9 +18,9 @@ public class Main extends Application {
     ///Starting function which setups all the ui and event handling
     ///Equivalent to main functions
     public void start(Stage stage)  {
-        VBox verticalManager = new VBox(4);
+        VBox verticalManager = new VBox(8);
         verticalManager.setPadding(new Insets(6));
-        verticalManager.setAlignment(Pos.BASELINE_CENTER);
+        verticalManager.setAlignment(Pos.TOP_CENTER);
         createFirstRow(verticalManager);
         createSecondRow(verticalManager);
         Button sendButton = new Button("Send the request");
@@ -46,32 +46,29 @@ public class Main extends Application {
     ///Function that creates a tab view and tabs that decide whether you are looking at current or hourly data
     private void createTabs(Pane layoutManager){
         TabPane tabPane = new TabPane();
-        tabPane.setMinHeight(30);
+        tabPane.setId("TabPane");
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.setTabMinWidth(290);
-        Tab current = new Tab("Current weather");
-        GridPane currentWeatherTab = new GridPane();
-        currentWeatherTab.setId("CurrentWeatherTab");
-        current.setContent(currentWeatherTab);
-        Tab hourly = new Tab("Hourly weather");
-        GridPane hourlyWeatherTab = new GridPane();
-        hourlyWeatherTab.setId("HourlyWeatherTab");
-        current.setContent(hourlyWeatherTab);
+        Tab current = new Tab("Current weather", new VBox());
+        Tab hourly = new Tab("Hourly weather", new VBox());
         tabPane.getTabs().addAll(current, hourly);
         layoutManager.getChildren().add(tabPane);
+        tabPane.getSelectionModel().select(0);
     }
     ///Function that handles json data received from GET request
     private void handleJson(Pane layoutManager, JSONObject receivedJson){
         handleCurrentData(layoutManager, receivedJson.getJSONObject("current"));
         handleHourlyData(layoutManager, receivedJson.getJSONObject("hourly"));
+        ((TabPane) (layoutManager.lookup("#TabPane"))).getSelectionModel().select(1);
+        ((TabPane) (layoutManager.lookup("#TabPane"))).getSelectionModel().select(0);
     }
     ///Function that handles json data received from GET request that is current
     private void handleCurrentData(Pane layoutManager, JSONObject currentData) {
+        CurrentDataDisplay.createWeatherCodeSign(layoutManager, currentData.getInt("weather_code"));
         float currentTemperature = currentData.getFloat("temperature_2m");
         float apparentTemperature = currentData.getFloat("apparent_temperature");
         int relativeHumidity = currentData.getInt("relative_humidity_2m");
-        float preticipation = currentData.getFloat("precipitation");
-        int weatherCode = currentData.getInt("weather_code");
+        float precipitation = currentData.getFloat("precipitation");
         float pressure = currentData.getFloat("surface_pressure");
         float windSpeed = currentData.getFloat("wind_speed_10m");
     }
@@ -80,7 +77,7 @@ public class Main extends Application {
         JSONArray timeArray = hourlyData.getJSONArray("time");
         JSONArray apparentTemperature = hourlyData.getJSONArray("apparent_temperature");
         JSONArray relativeHumidity = hourlyData.getJSONArray("relative_humidity_2m");
-        JSONArray preticipation = hourlyData.getJSONArray("precipitation");
+        JSONArray precipitation = hourlyData.getJSONArray("precipitation");
         JSONArray weatherCode = hourlyData.getJSONArray("weather_code");
         JSONArray pressure = hourlyData.getJSONArray("surface_pressure");
         JSONArray windSpeed = hourlyData.getJSONArray("wind_speed_10m");
