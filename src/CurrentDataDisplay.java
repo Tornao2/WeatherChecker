@@ -1,20 +1,28 @@
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 ///Class for making UI for current weather data
 public class CurrentDataDisplay {
-    ///Static function importing an image and using it for weather code display
+    ///Static function importing an image and using it for weather code displaying and making some initial configurations with the style
     static public void createWeatherCodeSign(Pane layoutManager, int weatherCode){
         VBox layout = (VBox) ((TabPane) (layoutManager.lookup("#TabPane"))).getTabs().getFirst().getContent();
+        HBox centerBox = new HBox();
+        centerBox.setAlignment(Pos.BASELINE_CENTER);
+        layout.setPadding(new Insets(10, 0 , 0, 0));
         ImageView weatherImage;
         if(layout.lookup("#WeatherCodeDisplay") == null) {
             weatherImage = new ImageView();
             weatherImage.setId("WeatherCodeDisplay");
-            layout.getChildren().add(weatherImage);
+            centerBox.getChildren().add(weatherImage);
+            layout.getChildren().add(centerBox);
         } else {
             weatherImage = (ImageView) layout.lookup("#WeatherCodeDisplay");
         }
@@ -47,6 +55,7 @@ public class CurrentDataDisplay {
         VBox layout = (VBox) ((TabPane) (layoutManager.lookup("#TabPane"))).getTabs().getFirst().getContent();
         if(layout.lookup("#CurrentTemperatureText") == null) {
             Text temperatureText = new Text("Current Temperature: " + temperature + "°C");
+            temperatureText.setFont(new Font(20));
             temperatureText.setId("CurrentTemperatureText");
             layout.getChildren().addLast(temperatureText);
         } else {
@@ -58,6 +67,7 @@ public class CurrentDataDisplay {
         VBox layout = (VBox) ((TabPane) (layoutManager.lookup("#TabPane"))).getTabs().getFirst().getContent();
         if(layout.lookup("#CurrentTemperatureApparent") == null) {
             Text temperatureText = new Text("Apparent Temperature: " + temperature + "°C");
+            temperatureText.setFont(new Font(20));
             temperatureText.setId("CurrentTemperatureApparent");
             layout.getChildren().addLast(temperatureText);
         } else {
@@ -69,6 +79,7 @@ public class CurrentDataDisplay {
         VBox layout = (VBox) ((TabPane) (layoutManager.lookup("#TabPane"))).getTabs().getFirst().getContent();
         if(layout.lookup("#CurrentHumidity") == null) {
             Text humidityText = new Text("Humidity: " + humidity + "%");
+            humidityText.setFont(new Font(20));
             humidityText.setId("CurrentHumidity");
             layout.getChildren().addLast(humidityText);
         } else {
@@ -80,6 +91,7 @@ public class CurrentDataDisplay {
         VBox layout = (VBox) ((TabPane) (layoutManager.lookup("#TabPane"))).getTabs().getFirst().getContent();
         if(layout.lookup("#CurrentPrecipitation") == null) {
             Text precipitationText = new Text("Precipitation: " + precipitation + "mm");
+            precipitationText.setFont(new Font(20));
             precipitationText.setId("CurrentPrecipitation");
             layout.getChildren().addLast(precipitationText);
         } else {
@@ -91,6 +103,7 @@ public class CurrentDataDisplay {
         VBox layout = (VBox) ((TabPane) (layoutManager.lookup("#TabPane"))).getTabs().getFirst().getContent();
         if(layout.lookup("#CurrentPressure") == null) {
             Text pressureText = new Text("Pressure: " + pressure + "hPa");
+            pressureText.setFont(new Font(20));
             pressureText.setId("CurrentPressure");
             layout.getChildren().addLast(pressureText);
         } else {
@@ -102,6 +115,7 @@ public class CurrentDataDisplay {
         VBox layout = (VBox) ((TabPane) (layoutManager.lookup("#TabPane"))).getTabs().getFirst().getContent();
         if(layout.lookup("#CurrentWindSpeed") == null) {
             Text windText = new Text("Wind speed: " + windSpeed + "km/h");
+            windText.setFont(new Font(20));
             windText.setId("CurrentWindSpeed");
             layout.getChildren().addLast(windText);
         } else {

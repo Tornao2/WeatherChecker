@@ -1,6 +1,8 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -19,7 +21,7 @@ public class Main extends Application {
     ///Equivalent to main functions
     public void start(Stage stage)  {
         VBox verticalManager = new VBox(8);
-        verticalManager.setPadding(new Insets(6));
+        verticalManager.setPadding(new Insets(10, 5, 5, 5));
         verticalManager.setAlignment(Pos.TOP_CENTER);
         createFirstRow(verticalManager);
         createSecondRow(verticalManager);
@@ -53,7 +55,6 @@ public class Main extends Application {
         Tab hourly = new Tab("Hourly weather", new VBox());
         tabPane.getTabs().addAll(current, hourly);
         layoutManager.getChildren().add(tabPane);
-        tabPane.getSelectionModel().select(0);
     }
     ///Function that handles json data received from GET request
     private void handleJson(Pane layoutManager, JSONObject receivedJson){
@@ -74,11 +75,13 @@ public class Main extends Application {
     }
     ///Function that handles json data received from GET request that is hourly
     private void handleHourlyData(Pane layoutManager, JSONObject hourlyData) {
+        LongTermDataDisplay.createTabPane(layoutManager);
         JSONArray timeArray = hourlyData.getJSONArray("time");
+        JSONArray weatherCode = hourlyData.getJSONArray("weather_code");
+        JSONArray temperature = hourlyData.getJSONArray("temperature_2m");
         JSONArray apparentTemperature = hourlyData.getJSONArray("apparent_temperature");
         JSONArray relativeHumidity = hourlyData.getJSONArray("relative_humidity_2m");
         JSONArray precipitation = hourlyData.getJSONArray("precipitation");
-        JSONArray weatherCode = hourlyData.getJSONArray("weather_code");
         JSONArray pressure = hourlyData.getJSONArray("surface_pressure");
         JSONArray windSpeed = hourlyData.getJSONArray("wind_speed_10m");
     }
@@ -150,6 +153,8 @@ public class Main extends Application {
     ///Function which sets up the scene object
     private void basicSetUp(Stage stage, Pane layoutManager) {
         Scene scene = new Scene(layoutManager, 640, 480);
+        stage.setResizable(false);
+        layoutManager.setStyle("-fx-background-color: #f5fcfc ;");
         stage.setScene(scene);
         stage.setTitle("Weather checker");
         stage.show();
