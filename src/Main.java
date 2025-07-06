@@ -5,6 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -12,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 /// Main class for the program
 public class Main extends Application {
@@ -20,16 +23,14 @@ public class Main extends Application {
     ///Starting function which setups all the ui and event handling
     ///Equivalent to main functions
     public void start(Stage stage)  {
-        VBox verticalManager = new VBox(8);
-        verticalManager.setPadding(new Insets(10, 5, 5, 5));
-        verticalManager.setAlignment(Pos.TOP_CENTER);
+        VBox verticalManager = createRoots();
         createFirstRow(verticalManager);
         createSecondRow(verticalManager);
         Button sendButton = new Button("Send the request");
         sendButton.setOnAction(_ -> {
             if (verticalManager.lookup("Separator") != null){
-                verticalManager.getChildren().removeFirst();
-                verticalManager.getChildren().removeFirst();
+                verticalManager.getChildren().remove(1);
+                verticalManager.getChildren().remove(2);
             }
             try {
                 JSONObject json = httphandler.sendRequestConnection(composeUrl(verticalManager));
@@ -44,6 +45,19 @@ public class Main extends Application {
         verticalManager.getChildren().add(sendButton);
         createTabs(verticalManager);
         basicSetUp(stage, verticalManager);
+    }
+    /// Function to create a root Stackpane object and the actual manager, a vbox object
+    private VBox createRoots(){
+        StackPane root = new StackPane();
+        VBox manager = new VBox(8);
+        root.setId("Manager");
+        ImageView bg = new ImageView(new Image("resources/Background.png"));
+        bg.setOpacity(0.3);
+        root.getChildren().addFirst(bg);
+        root.getChildren().add(manager);
+        manager.setPadding(new Insets(10, 5, 5, 5));
+        manager.setAlignment(Pos.TOP_CENTER);
+        return manager;
     }
     ///Function that creates a tab view and tabs that decide whether you are looking at current or hourly data
     private void createTabs(Pane layoutManager){
@@ -152,9 +166,9 @@ public class Main extends Application {
     }
     ///Function which sets up the scene object
     private void basicSetUp(Stage stage, Pane layoutManager) {
-        Scene scene = new Scene(layoutManager, 640, 480);
+        Scene scene = new Scene(layoutManager.getParent(), 640, 480);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("resources/look.css")).toExternalForm());
         stage.setResizable(false);
-        layoutManager.setStyle("-fx-background-color: #f5fcfc ;");
         stage.setScene(scene);
         stage.setTitle("Weather checker");
         stage.show();

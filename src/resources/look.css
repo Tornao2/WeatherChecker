@@ -1,0 +1,12 @@
+.separator {
+    -fx-background-color: #aa1a1a;
+}
+
+.text {
+    -fx-font-size: 12;
+}
+
+#ErrorLabel {
+    -fx-font-size: 16;
+}
+
