@@ -10,7 +10,7 @@ public class LongTermDataDisplay {
         if (layoutManager.lookup("#LongTabPane") == null) {
             VBox layout = (VBox) ((TabPane) (layoutManager.lookup("#TabPane"))).getTabs().getLast().getContent();
             TabPane tabPane = new TabPane();
-            tabPane.setTabMinWidth(82);
+            tabPane.setTabMinWidth(81);
             tabPane.setId("LongTabPane");
             tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
             Tab temp = new Tab("Temperature", new VBox());

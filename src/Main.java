@@ -1,8 +1,6 @@
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -14,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
 
 /// Main class for the program
@@ -23,14 +22,15 @@ public class Main extends Application {
     ///Starting function which setups all the ui and event handling
     ///Equivalent to main functions
     public void start(Stage stage)  {
+        Locale.setDefault(Locale.of("en", "EN"));
         VBox verticalManager = createRoots();
         createFirstRow(verticalManager);
         createSecondRow(verticalManager);
         Button sendButton = new Button("Send the request");
         sendButton.setOnAction(_ -> {
-            if (verticalManager.lookup("Separator") != null){
-                verticalManager.getChildren().remove(1);
-                verticalManager.getChildren().remove(2);
+            if (verticalManager.lookup("#Separator") != null){
+                verticalManager.getChildren().removeFirst();
+                verticalManager.getChildren().removeFirst();
             }
             try {
                 JSONObject json = httphandler.sendRequestConnection(composeUrl(verticalManager));

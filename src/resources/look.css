@@ -1,12 +1,94 @@
+* {
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
 .separator {
     -fx-background-color: #aa1a1a;
 }
 
 .text {
-    -fx-font-size: 12;
+    -fx-font-size: 13;
 }
 
 #ErrorLabel {
     -fx-font-size: 16;
 }
 
+.button {
+    -fx-background-color: #d1e8ef;
+    -fx-border-color: #80aab6;
+    -fx-border-width: 1px;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: #d1e8ef;
+    -fx-border-color: #80aab6;
+    -fx-border-width: 1px;
+}
+
+.text-field {
+    -fx-background-color: #f1f9fa;
+    -fx-border-color: #80aab6;
+    -fx-border-width: 1px;
+}
+
+.date-picker .text-field {
+    -fx-background-color: #f1f9fa;
+    -fx-border-color: #80aab6;
+    -fx-border-width: 1px;
+}
+
+.date-picker-popup .day-cell {
+    -fx-background-color: #f1f9fa;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #d1e8ef;
+    -fx-text-fill: black;
+}
+
+.date-picker-popup .day-cell:focused  {
+    -fx-background-color: #d1e8ef;
+    -fx-text-fill: black;
+}
+
+.date-picker-popup .previous-month {
+    -fx-background-color: #bcdde7;
+}
+
+.date-picker-popup .next-month{
+    -fx-background-color: #bcdde7;
+}
+
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #d1e8ef;
+}
+
+.date-picker-popup > .month-year-pane {
+    -fx-background-color: #f1f9fa;
+}
+
+.tab-pane .tab-header-area .tab-header-background
+{
+    -fx-background-color: #d1e8ef;
+}
+
+.tab-pane .tab
+{
+    -fx-background-color: #f1f9fa;
+    -fx-background-radius: 2px;
+    -fx-background-insets: 0 15 0 15;
+}
+
+.tab-pane .tab:selected
+{
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-effect: none;
+    -fx-background-color: #bcdde7;
+}
+
+.tab-pane .tab-header-area {
+    -fx-padding: 4 0 4 8;
+}

@@ -4,9 +4,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-
+import java.time.chrono.Chronology;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -37,6 +36,7 @@ public class JavaFxBuilder {
     static public void createLabeledDataPicker(Pane layoutManager, String baseName) {
         GridPane box = new GridPane();
         DatePicker picker = new DatePicker();
+        picker.setChronology(Chronology.ofLocale(Locale.getDefault()));
         picker.setId(baseName.replace(" ", "")+"Date");
         Label label = new Label(baseName + ": ");
         layoutManager.getChildren().addAll();
@@ -52,14 +52,14 @@ public class JavaFxBuilder {
         Separator separator = new Separator();
         separator.setId("Separator");
         separator.setMaxWidth(640);
-        separator.getStylesheets().add((JavaFxBuilder.class.getResource("resources/look.css")).toExternalForm());
+        separator.getStylesheets().add((Objects.requireNonNull(JavaFxBuilder.class.getResource("resources/look.css"))).toExternalForm());
         layoutManager.getChildren().addFirst(separator);
     }
     /// Static function to create a text entity with defined by user id at the first position in the layout manager
     static public void createCenteredTextFirst(Pane layoutManager, String idName, String statement){
         Label text = new Label(statement);
         text.setId(idName);
-        text.getStylesheets().add((JavaFxBuilder.class.getResource("resources/look.css")).toExternalForm());
+        text.getStylesheets().add((Objects.requireNonNull(JavaFxBuilder.class.getResource("resources/look.css"))).toExternalForm());
         layoutManager.getChildren().addFirst(text);
     }
 }
