@@ -6,7 +6,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import java.time.chrono.Chronology;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * Class implementing the builder archetype for objects connected to javafx
@@ -52,14 +51,12 @@ public class JavaFxBuilder {
         Separator separator = new Separator();
         separator.setId("Separator");
         separator.setMaxWidth(640);
-        separator.getStylesheets().add((Objects.requireNonNull(JavaFxBuilder.class.getResource("resources/look.css"))).toExternalForm());
         layoutManager.getChildren().addFirst(separator);
     }
     /// Static function to create a text entity with defined by user id at the first position in the layout manager
     static public void createCenteredTextFirst(Pane layoutManager, String idName, String statement){
         Label text = new Label(statement);
         text.setId(idName);
-        text.getStylesheets().add((Objects.requireNonNull(JavaFxBuilder.class.getResource("resources/look.css"))).toExternalForm());
         layoutManager.getChildren().addFirst(text);
     }
 }

@@ -11,10 +11,6 @@
     -fx-font-size: 13;
 }
 
-#ErrorLabel {
-    -fx-font-size: 16;
-}
-
 .button {
     -fx-background-color: #d1e8ef;
     -fx-border-color: #80aab6;
@@ -74,14 +70,7 @@
     -fx-background-color: #d1e8ef;
 }
 
-.tab-pane .tab
-{
-    -fx-background-color: #f1f9fa;
-    -fx-background-radius: 2px;
-    -fx-background-insets: 0 15 0 15;
-}
-
-.tab-pane .tab:selected
+#tabPaneOverall .tab:selected
 {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
@@ -89,6 +78,27 @@
     -fx-background-color: #bcdde7;
 }
 
+#tabPaneOverall .tab
+{
+    -fx-background-color: #f1f9fa;
+    -fx-background-radius: 2px;
+    -fx-background-insets: 0 15 0 15;
+}
+
+#LongTabPane .tab
+{
+    -fx-background-insets: 0 3 0 3;
+}
+
 .tab-pane .tab-header-area {
     -fx-padding: 4 0 4 8;
+}
+
+#ErrorLabel .text{
+    -fx-font-size: 18;
+}
+
+#CurrentDataBox {
+    -fx-background-color: #bcdde780;
+    -fx-background-radius: 10px;
 }

@@ -13,7 +13,7 @@ public class HttpsHandler {
      */
     private final HttpClient client;
     /**
-     * Basic constructor which set ups the client object for future use
+     * Basic constructor which set-ups the client object for future use
      */
     public HttpsHandler(){
         client = HttpClient.newHttpClient();

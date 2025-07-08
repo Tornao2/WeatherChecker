@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -52,7 +53,7 @@ public class Main extends Application {
         VBox manager = new VBox(8);
         root.setId("Manager");
         ImageView bg = new ImageView(new Image("resources/Background.png"));
-        bg.setOpacity(0.3);
+        bg.setOpacity(0.6);
         root.getChildren().addFirst(bg);
         root.getChildren().add(manager);
         manager.setPadding(new Insets(10, 5, 5, 5));
@@ -62,11 +63,11 @@ public class Main extends Application {
     ///Function that creates a tab view and tabs that decide whether you are looking at current or hourly data
     private void createTabs(Pane layoutManager){
         TabPane tabPane = new TabPane();
-        tabPane.setId("TabPane");
+        tabPane.setId("tabPaneOverall");
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.setTabMinWidth(290);
-        Tab current = new Tab("Current weather", new VBox());
-        Tab hourly = new Tab("Hourly weather", new VBox());
+        Tab current = new Tab("Current weather", new StackPane (new VBox()));
+        Tab hourly = new Tab("Hourly weather", new StackPane (new VBox()));
         tabPane.getTabs().addAll(current, hourly);
         layoutManager.getChildren().add(tabPane);
     }
@@ -74,12 +75,12 @@ public class Main extends Application {
     private void handleJson(Pane layoutManager, JSONObject receivedJson){
         handleCurrentData(layoutManager, receivedJson.getJSONObject("current"));
         handleHourlyData(layoutManager, receivedJson.getJSONObject("hourly"));
-        ((TabPane) (layoutManager.lookup("#TabPane"))).getSelectionModel().select(1);
-        ((TabPane) (layoutManager.lookup("#TabPane"))).getSelectionModel().select(0);
+        ((TabPane) (layoutManager.lookup("#tabPaneOverall"))).getSelectionModel().select(1);
+        ((TabPane) (layoutManager.lookup("#tabPaneOverall"))).getSelectionModel().select(0);
     }
     ///Function that handles json data received from GET request that is current
     private void handleCurrentData(Pane layoutManager, JSONObject currentData) {
-        CurrentDataDisplay.createWeatherCodeSign(layoutManager, currentData.getInt("weather_code"));
+        CurrentDataDisplay.createWeatherCodeSign(layoutManager, currentData.getInt("weather_code"), LocalDateTime.parse(currentData.getString("time")));
         CurrentDataDisplay.addTemperatureText(layoutManager, currentData.getFloat("temperature_2m"));
         CurrentDataDisplay.addApparentTemperatureText(layoutManager, currentData.getFloat("apparent_temperature"));
         CurrentDataDisplay.addRelativeHumidity(layoutManager, currentData.getInt("relative_humidity_2m"));
