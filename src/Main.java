@@ -90,10 +90,10 @@ public class Main extends Application {
     }
     ///Function that handles json data received from GET request that is hourly
     private void handleHourlyData(Pane layoutManager, JSONObject hourlyData) {
-        LongTermDataDisplay.createTabPane(layoutManager);
         JSONArray timeArray = hourlyData.getJSONArray("time");
+        LongTermDataDisplay.createTabPane(layoutManager);
+        LongTermDataDisplay.createTemperatureChart(layoutManager, timeArray, hourlyData.getJSONArray("temperature_2m"));
         JSONArray weatherCode = hourlyData.getJSONArray("weather_code");
-        JSONArray temperature = hourlyData.getJSONArray("temperature_2m");
         JSONArray apparentTemperature = hourlyData.getJSONArray("apparent_temperature");
         JSONArray relativeHumidity = hourlyData.getJSONArray("relative_humidity_2m");
         JSONArray precipitation = hourlyData.getJSONArray("precipitation");
