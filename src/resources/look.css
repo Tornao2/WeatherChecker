@@ -102,3 +102,22 @@
     -fx-background-color: #bcdde780;
     -fx-background-radius: 10px;
 }
+
+#ScrollViewPane {
+    -fx-background-color: #d1e8ef;
+    -fx-background-radius: 6px;
+    -fx-padding: 5 0 5 0px;
+}
+
+#ScrollContent {
+    -fx-background-color: #f1f9fa;
+}
+
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: #d1e8ef;
+}
+
+.scroll-pane .thumb {
+    -fx-background-color: #f1f9fa;
+    -fx-background-radius: 0;
+}

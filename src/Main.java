@@ -42,6 +42,7 @@ public class Main extends Application {
             } catch (Exception e) {
                 JavaFxBuilder.createHorSeperatorFirst(verticalManager);
                 JavaFxBuilder.createCenteredTextFirst(verticalManager, "ErrorLabel", e.getMessage());
+                throw e;
             }});
         verticalManager.getChildren().add(sendButton);
         createTabs(verticalManager);
@@ -90,10 +91,8 @@ public class Main extends Application {
     }
     ///Function that handles json data received from GET request that is hourly
     private void handleHourlyData(Pane layoutManager, JSONObject hourlyData) {
-        JSONArray timeArray = hourlyData.getJSONArray("time");
-        LongTermDataDisplay.createTabPane(layoutManager);
-        LongTermDataDisplay.createTemperatureChart(layoutManager, timeArray, hourlyData.getJSONArray("temperature_2m"));
-        JSONArray weatherCode = hourlyData.getJSONArray("weather_code");
+        LongTermDataDisplay.createScrollingView(layoutManager, hourlyData.getJSONArray("time"),
+                hourlyData.getJSONArray("temperature_2m"), hourlyData.getJSONArray("weather_code"));
         JSONArray apparentTemperature = hourlyData.getJSONArray("apparent_temperature");
         JSONArray relativeHumidity = hourlyData.getJSONArray("relative_humidity_2m");
         JSONArray precipitation = hourlyData.getJSONArray("precipitation");

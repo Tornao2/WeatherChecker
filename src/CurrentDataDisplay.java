@@ -37,7 +37,7 @@ public class CurrentDataDisplay {
             Text time = new Text();
             time.setId("TimeData");
             time.setFont(new Font(23));
-            time.setText(timeDate.format(DateTimeFormatter.ofLocalizedDateTime(LONG, MEDIUM)));
+            time.setText(timeDate.format(DateTimeFormatter.ofLocalizedDateTime(MEDIUM, SHORT)));
             weather.getChildren().add(weatherImage);
             date.getChildren().add(time);
             HBox overallRow = new HBox(date, weather);
