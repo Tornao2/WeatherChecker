@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
@@ -42,7 +41,6 @@ public class Main extends Application {
             } catch (Exception e) {
                 JavaFxBuilder.createHorSeperatorFirst(verticalManager);
                 JavaFxBuilder.createCenteredTextFirst(verticalManager, "ErrorLabel", e.getMessage());
-                throw e;
             }});
         verticalManager.getChildren().add(sendButton);
         createTabs(verticalManager);
@@ -75,7 +73,12 @@ public class Main extends Application {
     ///Function that handles json data received from GET request
     private void handleJson(Pane layoutManager, JSONObject receivedJson){
         handleCurrentData(layoutManager, receivedJson.getJSONObject("current"));
-        handleHourlyData(layoutManager, receivedJson.getJSONObject("hourly"));
+        LongTermDataDisplay.createMenuForChosenNode(layoutManager);
+        LongTermDataDisplay.createScrollingView(layoutManager, receivedJson.getJSONObject("hourly").getJSONArray("time"),
+                receivedJson.getJSONObject("hourly").getJSONArray("temperature_2m"), receivedJson.getJSONObject("hourly").getJSONArray("weather_code"),
+                receivedJson.getJSONObject("hourly").getJSONArray("apparent_temperature"), receivedJson.getJSONObject("hourly").getJSONArray("relative_humidity_2m"),
+                receivedJson.getJSONObject("hourly").getJSONArray("precipitation"), receivedJson.getJSONObject("hourly").getJSONArray("surface_pressure"),
+                receivedJson.getJSONObject("hourly").getJSONArray("wind_speed_10m"));
         ((TabPane) (layoutManager.lookup("#tabPaneOverall"))).getSelectionModel().select(1);
         ((TabPane) (layoutManager.lookup("#tabPaneOverall"))).getSelectionModel().select(0);
     }
@@ -88,16 +91,6 @@ public class Main extends Application {
         CurrentDataDisplay.addPrecipitation(layoutManager, currentData.getFloat("precipitation"));
         CurrentDataDisplay.addPressure(layoutManager, currentData.getFloat("surface_pressure"));
         CurrentDataDisplay.addWindSpeed(layoutManager, currentData.getFloat("wind_speed_10m"));
-    }
-    ///Function that handles json data received from GET request that is hourly
-    private void handleHourlyData(Pane layoutManager, JSONObject hourlyData) {
-        LongTermDataDisplay.createScrollingView(layoutManager, hourlyData.getJSONArray("time"),
-                hourlyData.getJSONArray("temperature_2m"), hourlyData.getJSONArray("weather_code"));
-        JSONArray apparentTemperature = hourlyData.getJSONArray("apparent_temperature");
-        JSONArray relativeHumidity = hourlyData.getJSONArray("relative_humidity_2m");
-        JSONArray precipitation = hourlyData.getJSONArray("precipitation");
-        JSONArray pressure = hourlyData.getJSONArray("surface_pressure");
-        JSONArray windSpeed = hourlyData.getJSONArray("wind_speed_10m");
     }
     ///Function to compose the url used to send the request based on the parameters program user chooses
     private String composeUrl(Pane layoutManager){
