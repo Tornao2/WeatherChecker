@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
@@ -33,7 +34,7 @@ public class Main extends Application {
                 verticalManager.getChildren().removeFirst();
             }
             try {
-                JSONObject json = httphandler.sendRequestConnection(composeUrl(verticalManager));
+                JSONObject json = httphandler.sendRequestConnectionWeather(composeUrl(verticalManager));
                 if (json.isEmpty())
                     throw new RuntimeException("GET didn't succeed");
                 else
@@ -102,19 +103,21 @@ public class Main extends Application {
     }
     ///Function to parse the coordinates from the textfields and employ some checks to their correctness
     private Pair<Float, Float> parseCoordinates(Pane layoutManager) {
-        String latitudeText = ((TextField) (layoutManager.lookup("#LatitudeField"))).getText();
-        String longitudeText = ((TextField) (layoutManager.lookup("#LongitudeField"))).getText();
-        if (latitudeText.isEmpty() || longitudeText.isEmpty()){
-            throw new RuntimeException("Both latitude and longitude must have a valid argument");
+        String locationName = ((TextField) (layoutManager.lookup("#LocationField"))).getText().replace(" ", "_");
+        if (locationName.isEmpty()){
+            throw new RuntimeException("You must give a location name");
         }
-        float latitudeFloat = Math.round(Float.parseFloat(latitudeText) * 100000) / 100000.0f;
-        float longitudeFloat = Math.round(Float.parseFloat(longitudeText) * 100000) / 100000.0f;
-        if (longitudeFloat > 180 || longitudeFloat < -180) {
-            throw new RuntimeException("Wrong longitude format");
+        JSONArray response = httphandler.sendRequestConnectionGeocoding("https://geocode.maps.co/search?q=" + locationName +
+                       "&api_key=GIVEAPIKEY");
+        if (response.isEmpty()){
+            throw new RuntimeException("No location could be found");
         }
-        if (latitudeFloat < -90 || latitudeFloat > 90){
-            throw new RuntimeException("Wrong latitude format");
+        int result = JavaFxBuilder.createAlert(response);
+        if (result == -1){
+            throw new RuntimeException("You haven't chosen a location");
         }
+        float latitudeFloat = response.getJSONObject(result).getFloat("lat");
+        float longitudeFloat = response.getJSONObject(result).getFloat("lon");
         return new Pair<>(latitudeFloat, longitudeFloat);
     }
     ///Function to parse the start-end dates for the use in url composition which also employs checks to their correctness
@@ -137,13 +140,8 @@ public class Main extends Application {
     }
     ///Function to create textfields in the first virtual row of program UI which pertain to latitude and longitude
     private void createFirstRow(Pane layoutManager){
-        GridPane firstRow = new GridPane();
-        JavaFxBuilder.createLabeledTextField(firstRow, "Latitude");
-        JavaFxBuilder.createLabeledTextField(firstRow, "Longitude");
-        GridPane.setConstraints(firstRow.getChildren().getFirst(), 1, 0);
-        GridPane.setConstraints(firstRow.getChildren().getLast(), 2, 0);
-        firstRow.getColumnConstraints().add(new ColumnConstraints(0));
-        firstRow.getColumnConstraints().add(new ColumnConstraints(320));
+        StackPane firstRow = new StackPane();
+        JavaFxBuilder.createLabeledTextField(firstRow, "Location");
         layoutManager.getChildren().add(firstRow);
     }
     ///Function to create data pickers in the second virtual row of program UI which pertain to start and end dates

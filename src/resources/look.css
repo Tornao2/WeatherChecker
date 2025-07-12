@@ -121,3 +121,9 @@
     -fx-background-radius: 20;
     -fx-font-size: 20;
 }
+
+#ResultingPlaces {
+    -fx-background-color: #d1e8ef;
+    -fx-background-radius: 15;
+    -fx-font-size: 16;
+}

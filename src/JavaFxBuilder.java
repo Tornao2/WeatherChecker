@@ -1,11 +1,21 @@
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import org.json.JSONArray;
+
 import java.time.chrono.Chronology;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Class implementing the builder archetype for objects connected to javafx
@@ -17,6 +27,7 @@ public class JavaFxBuilder {
       */
     static public void createLabeledTextField(Pane layoutManager, String baseName){
         GridPane box = new GridPane();
+        box.setAlignment(Pos.CENTER);
         TextField field = new TextField();
         field.setId(baseName.replace(" ", "") + "Field");
         Label label = new Label(baseName + ": ");
@@ -58,5 +69,49 @@ public class JavaFxBuilder {
         Label text = new Label(statement);
         text.setId(idName);
         layoutManager.getChildren().addFirst(text);
+    }
+    /// Static function to create the alert window to choose location
+    static public int createAlert(JSONArray response){
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setTitle("Choose correct location");
+        VBox content = new VBox();
+        content.setSpacing(10);
+        ScrollPane actualContent = new ScrollPane();
+        actualContent.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        String res = Objects.requireNonNull(JavaFxBuilder.class.getResource("resources/look.css")).toExternalForm();
+        final int[] selectedIndex = {-1};
+        for (int i = 0; i < response.length(); i++){
+            if (!response.getJSONObject(i).getString("type").equals("city") &&
+                    !response.getJSONObject(i).getString("type").equals("town") &&
+                    !response.getJSONObject(i).getString("type").equals("village") &&
+                    !response.getJSONObject(i).getString("type").equals("hamlet") &&
+                    !response.getJSONObject(i).getString("class").equals("boundary")){
+                continue;
+            }
+            VBox singleResult = new VBox(new Text(response.getJSONObject(i).getString("display_name")));
+            final int index = i;
+            singleResult.setOnMouseClicked(_ -> {
+                for (Node node : content.getChildren()) {
+                    node.setStyle("-fx-background-color: #d1e8ef;-fx-background-radius: 15;-fx-font-size: 16;");
+                }
+                singleResult.setStyle("-fx-background-color: #5bb38b;-fx-background-radius: 15;-fx-font-size: 16;");
+                selectedIndex[0] = index;
+            });
+            singleResult.setPadding(new Insets(10));
+            singleResult.setId("ResultingPlaces");
+            singleResult.getStylesheets().add(res);
+            content.getChildren().add(singleResult);
+        }
+        actualContent.setContent(content);
+        alert.getDialogPane().setContent(actualContent);
+        ButtonType okButton = new ButtonType("Choose the location", ButtonBar.ButtonData.LEFT);
+        alert.getButtonTypes().add(okButton);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent()){
+            return selectedIndex[0];
+        } else {
+            return -1;
+        }
     }
 }

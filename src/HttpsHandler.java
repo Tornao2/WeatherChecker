@@ -1,3 +1,4 @@
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URI;
@@ -18,15 +19,27 @@ public class HttpsHandler {
     public HttpsHandler(){
         client = HttpClient.newHttpClient();
     }
-    /// Function which sends the request to the specified url by appending additional parameters to the base address
-    /// It returns a jsonobject with the response or an empty json if there was en error
-    public JSONObject sendRequestConnection(String url) {
+    /// Function which sends a request using open-meteo api to get weather data
+    public JSONObject sendRequestConnectionWeather(String url) {
         try {
             HttpRequest request = HttpRequest.newBuilder(new URI(url)).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONObject jsonResponse = new JSONObject(response.body());
             if (jsonResponse.has("error"))
                 return new JSONObject();
+            return jsonResponse;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    /// Function which sends a request using geocode maps api to get geolocation data
+    public JSONArray sendRequestConnectionGeocoding(String url) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder(new URI(url)).GET().build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            JSONArray jsonResponse = new JSONArray(response.body());
+            if (jsonResponse.isEmpty())
+                return new JSONArray();
             return jsonResponse;
         } catch (Exception e) {
             throw new RuntimeException(e);
