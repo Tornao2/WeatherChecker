@@ -108,7 +108,7 @@ public class Main extends Application {
             throw new RuntimeException("You must give a location name");
         }
         JSONArray response = httphandler.sendRequestConnectionGeocoding("https://geocode.maps.co/search?q=" + locationName +
-                       "&api_key=GIVEAPIKEY");
+                       "&api_key=INSERTAPIKEY");
         if (response.isEmpty()){
             throw new RuntimeException("No location could be found");
         }

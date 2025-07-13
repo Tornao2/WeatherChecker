@@ -37,10 +37,9 @@ public class HttpsHandler {
         try {
             HttpRequest request = HttpRequest.newBuilder(new URI(url)).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONArray jsonResponse = new JSONArray(response.body());
-            if (jsonResponse.isEmpty())
+            if (response == null)
                 return new JSONArray();
-            return jsonResponse;
+            return new JSONArray(response.body());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

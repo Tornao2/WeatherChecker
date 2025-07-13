@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import org.json.JSONArray;
 
 import java.time.chrono.Chronology;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,7 +23,7 @@ import java.util.Optional;
  */
 public class JavaFxBuilder {
      /**
-      * Static method to create javaFx textfield with a label predefined to be in one row using a gridpane
+      * Static method to create javaFx text field with a label predefined to be in one row using a grid pane
       * and setting id for the field for later searches by using the basename provided by user
       */
     static public void createLabeledTextField(Pane layoutManager, String baseName){
@@ -41,7 +42,7 @@ public class JavaFxBuilder {
     }
      /**
       * Static function to create a labeled data picker object with a predefined label, both positioned in one row;
-      * id set to the data picker itself is created by concating Date with the base name
+      * id set to the data picker itself is created by concatenating Date with the base name
       */
     static public void createLabeledDataPicker(Pane layoutManager, String baseName) {
         GridPane box = new GridPane();
@@ -57,7 +58,7 @@ public class JavaFxBuilder {
         box.getChildren().addAll(label, picker);
         layoutManager.getChildren().add(box);
     }
-    /// Static function to create a horizontal seperator with predefined id that spans the entire screen at the first position in the layout manager
+    /// Static function to create a horizontal separator with predefined id that spans the entire screen at the first position in the layout manager
     static public void createHorSeperatorFirst(Pane layoutManager) {
         Separator separator = new Separator();
         separator.setId("Separator");
@@ -72,23 +73,16 @@ public class JavaFxBuilder {
     }
     /// Static function to create the alert window to choose location
     static public int createAlert(JSONArray response){
-        Alert alert = new Alert(Alert.AlertType.NONE);
-        alert.setTitle("Choose correct location");
-        VBox content = new VBox();
-        content.setSpacing(10);
-        ScrollPane actualContent = new ScrollPane();
-        actualContent.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        VBox content = new VBox(10);
         String res = Objects.requireNonNull(JavaFxBuilder.class.getResource("resources/look.css")).toExternalForm();
         final int[] selectedIndex = {-1};
+        ArrayList<String> listOfNames = new ArrayList<>();
         for (int i = 0; i < response.length(); i++){
-            if (!response.getJSONObject(i).getString("type").equals("city") &&
-                    !response.getJSONObject(i).getString("type").equals("town") &&
-                    !response.getJSONObject(i).getString("type").equals("village") &&
-                    !response.getJSONObject(i).getString("type").equals("hamlet") &&
-                    !response.getJSONObject(i).getString("class").equals("boundary")){
+            if (!checkResult(listOfNames, i, response)) {
                 continue;
             }
             VBox singleResult = new VBox(new Text(response.getJSONObject(i).getString("display_name")));
+            listOfNames.add(response.getJSONObject(i).getString("display_name"));
             final int index = i;
             singleResult.setOnMouseClicked(_ -> {
                 for (Node node : content.getChildren()) {
@@ -102,9 +96,34 @@ public class JavaFxBuilder {
             singleResult.getStylesheets().add(res);
             content.getChildren().add(singleResult);
         }
+        ScrollPane actualContent = new ScrollPane();
+        actualContent.setMinHeight(300);
+        actualContent.setMinWidth(200);
         actualContent.setContent(content);
-        alert.getDialogPane().setContent(actualContent);
+        return useAnAlert(actualContent, selectedIndex);
+    }
+    /// Check whether a result should be forwarded
+    static private boolean checkResult(ArrayList<String> listOfNames, int i, JSONArray response){
+        if (!response.getJSONObject(i).getString("type").equals("city") &&
+                !response.getJSONObject(i).getString("type").equals("town") &&
+                !response.getJSONObject(i).getString("type").equals("village") &&
+                !response.getJSONObject(i).getString("type").equals("hamlet") &&
+                !response.getJSONObject(i).getString("class").equals("boundary")){
+            return false;
+        }
+        for (String s: listOfNames){
+            if(response.getJSONObject(i).getString("display_name").equals(s)){
+                return false;
+            }
+        }
+        return true;
+    }
+    /// Create the alert window and return the needed result
+    static private int useAnAlert(ScrollPane actualContent, final int[] selectedIndex){
+        Alert alert = new Alert(Alert.AlertType.NONE);
         ButtonType okButton = new ButtonType("Choose the location", ButtonBar.ButtonData.LEFT);
+        alert.setTitle("Choose correct location");
+        alert.getDialogPane().setContent(actualContent);
         alert.getButtonTypes().add(okButton);
         alert.initModality(Modality.APPLICATION_MODAL);
         Optional<ButtonType> result = alert.showAndWait();
