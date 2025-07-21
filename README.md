@@ -13,6 +13,8 @@ Additionally following technologies and concepts were used:
 * Working with resources - png and css files
 * Uses HTTPS requests to external APIs
 
+IDE used is intelij community edition
+
 # Features
 
 Project allows for receiving data about current and long-term weather data including:
