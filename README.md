@@ -34,6 +34,3 @@ Used apis have a few limitations like for example open-meteo weather forecast ap
 
 For the program to work "INSERTAPIKEY" must be replaced with a correct api key from the geocoding api at line 111 of the "main.java" file 
 
-# Demonstration
-
-Demonstration of the project is located at: https://www.youtube.com/watch?v=CThv_hNXBJw
